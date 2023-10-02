@@ -1,0 +1,15 @@
+version: "3.0"
+services:
+  my_contabilidade_db:
+    image: postgres
+    container_name: my_contabilidade_db
+    environment:
+      POSTGRES_DB: ${PG_DB_NAME}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    volumes:
+      - my_contabilidade_db:/var/lib/postgresql/data
+    ports:
+      - "5432:${PG_PORT}"
+volumes:
+  my_contabilidade_db:
