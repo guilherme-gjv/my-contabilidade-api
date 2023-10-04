@@ -169,7 +169,7 @@ const deleteById = async (req: Request, res: Response) => {
     const deletedUser = await UserRepository.deleteById(convertedId);
 
     return res
-      .json(200)
+      .status(200)
       .json({ message: "Usuário deletado.", data: deletedUser });
   } catch (e) {
     return res.status(500).json({
