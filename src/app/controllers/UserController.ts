@@ -61,6 +61,10 @@ const findById = async (req: Request, res: Response) => {
 
     const foundUser = await UserRepository.findById(convertedId);
 
+    if (!foundUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
     return res.status(200).json({ data: foundUser });
   } catch (e) {
     return res.status(500).json({
