@@ -1,9 +1,31 @@
 import { Request, Response } from "express";
 import UserRepository from "../repositories/UserRepository";
+import { userSchema } from "../services/schemas/userSchema";
+import { ZodError } from "zod";
 
 const create = async (req: Request, res: Response) => {
   try {
     const { email, cpf, name, password } = req.body;
+
+    try {
+      await userSchema.parseAsync({
+        email,
+        cpf,
+        name,
+        password,
+      });
+    } catch (e) {
+      let errorMessages = "";
+      const err = e as ZodError;
+      err.issues.forEach((issue, index) => {
+        errorMessages +=
+          issue.message + (index !== err.issues.length - 1 ? " " : "");
+      });
+      return res.status(400).json({
+        error: errorMessages,
+        detailed_errors: e as ZodError,
+      });
+    }
 
     const createdUser = await UserRepository.createUser({
       email,
@@ -92,6 +114,26 @@ const updatedById = async (req: Request, res: Response) => {
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
+    }
+
+    try {
+      await userSchema.parseAsync({
+        email,
+        cpf,
+        name,
+        password,
+      });
+    } catch (e) {
+      let errorMessages = "";
+      const err = e as ZodError;
+      err.issues.forEach((issue, index) => {
+        errorMessages +=
+          issue.message + (index !== err.issues.length - 1 ? " " : "");
+      });
+      return res.status(400).json({
+        error: errorMessages,
+        detailed_errors: e as ZodError,
+      });
     }
 
     const updatedUser = await UserRepository.updatedById(
