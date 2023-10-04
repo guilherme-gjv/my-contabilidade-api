@@ -120,6 +120,12 @@ const updatedById = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "O id informado não é um número." });
     }
 
+    const foundUser = await UserRepository.findById(convertedId);
+
+    if (!foundUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
     try {
       await userSchema.parseAsync({
         email,
@@ -168,6 +174,12 @@ const deleteById = async (req: Request, res: Response) => {
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
+    }
+
+    const foundUser = await UserRepository.findById(convertedId);
+
+    if (!foundUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
     }
 
     const deletedUser = await UserRepository.deleteById(convertedId);
