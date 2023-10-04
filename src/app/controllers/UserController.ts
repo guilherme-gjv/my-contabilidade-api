@@ -112,7 +112,7 @@ const findAll = async (req: Request, res: Response) => {
       convertedRows
     );
 
-    return res.status(200).json({ data: users, page, rows });
+    return res.status(200).json({ page, rows, data: users });
   } catch (e) {
     return res.status(500).json({
       error: "Erro inesperado.",
