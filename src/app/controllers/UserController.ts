@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import UserRepository from "../repositories/UserRepository";
 import { userSchema } from "../services/schemas/userSchema";
 import { ZodError } from "zod";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 const create = async (req: Request, res: Response) => {
   try {
@@ -38,6 +39,21 @@ const create = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Usuário criado.", data: createdUser });
   } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      if (
+        e.code === "P2002" &&
+        e.meta &&
+        e.meta.target &&
+        (e.meta.target as string[]).length > 0
+      ) {
+        return res.status(409).json({
+          error: `Um usuário com o mesmo '${
+            (e.meta.target as string[])[0]
+          }' já existe.`,
+        });
+      }
+    }
+
     return res.status(500).json({
       error: "Erro inesperado.",
       error_details: (e as Error).message,
@@ -155,6 +171,21 @@ const updatedById = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Usuário atualizado.", data: updatedUser });
   } catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      if (
+        e.code === "P2002" &&
+        e.meta &&
+        e.meta.target &&
+        (e.meta.target as string[]).length > 0
+      ) {
+        return res.status(409).json({
+          error: `Um usuário com o mesmo '${
+            (e.meta.target as string[])[0]
+          }' já existe.`,
+        });
+      }
+    }
+
     return res.status(500).json({
       error: "Erro inesperado.",
       error_details: (e as Error).message,
