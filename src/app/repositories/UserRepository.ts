@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { userSelect } from "../PrismaSelects";
-import { IUser } from "../models/IUser";
+import { IUser } from "../domain/models/IUser";
 
 const prisma = new PrismaClient();
 
