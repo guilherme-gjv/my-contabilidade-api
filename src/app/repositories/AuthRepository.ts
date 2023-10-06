@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { authSelect } from "../PrismaSelects";
+import { userSelect } from "../PrismaSelects";
 
 const prisma = new PrismaClient();
 
 const login = async (email: string, password: string) => {
   const user = await prisma.user.findUnique({
     where: { email },
-    select: authSelect,
+    select: userSelect,
   });
 
   if (user && user.password) {
