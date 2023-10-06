@@ -4,6 +4,7 @@ import { userSchema } from "../services/schemas/userSchema";
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { AuthCustomRequest } from "../domain/types/Auth";
+import { config } from "../../config/config";
 
 const create = async (req: Request, res: Response) => {
   try {
@@ -100,6 +101,12 @@ const findById = async (req: Request, res: Response) => {
 
 const findAll = async (req: Request, res: Response) => {
   try {
+    if (config.app.state != "DEVELOPMENT") {
+      return res.status(401).json({
+        error: "Esta rota não pode ser acessada em ambiente de produção.",
+      });
+    }
+
     let convertedPage: number | undefined = parseInt(
       req.query["page"] as string
     );
