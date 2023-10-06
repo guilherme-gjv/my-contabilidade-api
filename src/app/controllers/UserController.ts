@@ -78,7 +78,7 @@ const findById = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "O id informado não é um número." });
     }
 
-    if (user_info.id !== id) {
+    if (user_info.id !== convertedId) {
       return res.status(403).json({
         error: "O usuário com o id informado não pode acessar esta essa rota.",
       });
@@ -152,7 +152,7 @@ const updatedById = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "O id informado não é um número." });
     }
 
-    if (user_info.id !== id) {
+    if (user_info.id !== convertedId) {
       return res.status(403).json({
         error: "O usuário com o id informado não pode acessar esta essa rota.",
       });
@@ -230,7 +230,7 @@ const deleteById = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "O id informado não é um número." });
     }
 
-    if (user_info.id !== id) {
+    if (user_info.id !== convertedId) {
       return res.status(403).json({
         error: "O usuário com o id informado não pode acessar esta essa rota.",
       });
