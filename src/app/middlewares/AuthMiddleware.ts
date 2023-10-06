@@ -1,10 +1,10 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { config } from "../../config/config";
 import { AuthCustomRequest } from "../domain/types/Auth";
 
 const authenticate = async (
-  req: AuthCustomRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -26,15 +26,15 @@ const authenticate = async (
         if (decoded) {
           if ((decoded as JwtPayload).id) {
             const userId = (decoded as JwtPayload).id;
-            req.user_info.id = userId;
+            (req as AuthCustomRequest).user_info.id = userId;
           }
           if ((decoded as JwtPayload).cpf) {
             const userCpf = (decoded as JwtPayload).cpf;
-            req.user_info.cpf = userCpf;
+            (req as AuthCustomRequest).user_info.cpf = userCpf;
           }
           if ((decoded as JwtPayload).email) {
             const userEmail = (decoded as JwtPayload).email;
-            req.user_info.email = userEmail;
+            (req as AuthCustomRequest).user_info.email = userEmail;
           }
         }
       }

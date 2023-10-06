@@ -3,6 +3,7 @@ import UserRepository from "../repositories/UserRepository";
 import { userSchema } from "../services/schemas/userSchema";
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { AuthCustomRequest } from "../domain/types/Auth";
 
 const create = async (req: Request, res: Response) => {
   try {
@@ -63,6 +64,7 @@ const create = async (req: Request, res: Response) => {
 
 const findById = async (req: Request, res: Response) => {
   try {
+    const { user_info } = req as AuthCustomRequest;
     const { id } = req.params;
 
     if (!id) {
@@ -73,6 +75,12 @@ const findById = async (req: Request, res: Response) => {
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
+    }
+
+    if (user_info.id !== id) {
+      return res.status(403).json({
+        error: "O usuário com o id informado não pode acessar esta essa rota.",
+      });
     }
 
     const foundUser = await UserRepository.findById(convertedId);
@@ -123,6 +131,7 @@ const findAll = async (req: Request, res: Response) => {
 
 const updatedById = async (req: Request, res: Response) => {
   try {
+    const { user_info } = req as AuthCustomRequest;
     const { email, cpf, name, password } = req.body;
     const { id } = req.params;
 
@@ -134,6 +143,12 @@ const updatedById = async (req: Request, res: Response) => {
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
+    }
+
+    if (user_info.id !== id) {
+      return res.status(403).json({
+        error: "O usuário com o id informado não pode acessar esta essa rota.",
+      });
     }
 
     const foundUser = await UserRepository.findById(convertedId);
@@ -195,6 +210,7 @@ const updatedById = async (req: Request, res: Response) => {
 
 const deleteById = async (req: Request, res: Response) => {
   try {
+    const { user_info } = req as AuthCustomRequest;
     const { id } = req.params;
 
     if (!id) {
@@ -205,6 +221,12 @@ const deleteById = async (req: Request, res: Response) => {
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
+    }
+
+    if (user_info.id !== id) {
+      return res.status(403).json({
+        error: "O usuário com o id informado não pode acessar esta essa rota.",
+      });
     }
 
     const foundUser = await UserRepository.findById(convertedId);
