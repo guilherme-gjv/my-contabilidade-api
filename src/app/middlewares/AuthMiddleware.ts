@@ -46,7 +46,7 @@ const authenticate = async (
       return res.status(401).json({ error: "Token de autorização inválido." });
     }
   } catch (e) {
-    res.status(500).json({ error: (e as Error).message });
+    return res.status(500).json({ error: (e as Error).message });
   }
 };
 
