@@ -26,6 +26,13 @@ const authenticate = async (
         if (decoded) {
           if ((decoded as JwtPayload).id) {
             const userId = (decoded as JwtPayload).id;
+
+            (req as AuthCustomRequest).user_info = {
+              email: "",
+              id: "",
+              cpf: "",
+            };
+
             (req as AuthCustomRequest).user_info.id = userId;
           }
           if ((decoded as JwtPayload).cpf) {
