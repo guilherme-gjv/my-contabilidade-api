@@ -16,12 +16,34 @@ model User {
   cpf         String?    @unique
   name        String  
   password    String
+  invoices    Invoice[]  
   createdAt   DateTime   @default(now()) @map("created_at")
   updatedAt   DateTime?  @updatedAt      @map("updated_at")
 
   @@map(name: "user")
 }
 
+model Invoice {
+  id              Int                @default(autoincrement())  @id
+  enterpriseCnpj  String?            @map("enterprise_cnpj")
+  description     String?  
+  user            User               @relation(fields: [userId], references: [id])
+  userId          Int                @map("user_id")
+  items           InvoiceItem[] 
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime?          @updatedAt      @map("updated_at")
 
+  @@map("invoice")
+}
 
+model InvoiceItem {
+  id          Int       @default(autoincrement()) @id
+  invoiceId   Int       @map("invoice_id")
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id])
+  name        String
+  price       Float 
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime?       @updatedAt      @map("updated_at")
 
+  @@map("invoice_item")
+}

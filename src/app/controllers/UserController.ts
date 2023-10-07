@@ -136,7 +136,7 @@ const findAll = async (req: Request, res: Response) => {
   }
 };
 
-const updatedById = async (req: Request, res: Response) => {
+const updateById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
     const { email, cpf, name, password } = req.body;
@@ -184,7 +184,7 @@ const updatedById = async (req: Request, res: Response) => {
       });
     }
 
-    const updatedUser = await UserRepository.updatedById(
+    const updatedUser = await UserRepository.updateById(
       { email, cpf, name, password },
       convertedId
     );
@@ -255,4 +255,4 @@ const deleteById = async (req: Request, res: Response) => {
   }
 };
 
-export default { create, findById, findAll, updatedById, deleteById };
+export default { create, findById, findAll, updateById, deleteById };
