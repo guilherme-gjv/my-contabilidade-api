@@ -4,12 +4,12 @@ import { invoiceSelect } from "../PrismaSelects";
 
 const prisma = new PrismaClient();
 
-const create = async ({ userId, description, enterpriseCpnj }: IInvoice) => {
+const create = async ({ userId, description, enterpriseCnpj }: IInvoice) => {
   const createdInvoice = await prisma.invoice.create({
     data: {
       userId,
       description,
-      enterpriseCpnj,
+      enterpriseCnpj,
     },
     select: invoiceSelect,
   });
@@ -54,12 +54,12 @@ const findById = async (id: number) => {
 };
 
 const updateById = async (
-  { userId, description, enterpriseCpnj }: IInvoice,
+  { userId, description, enterpriseCnpj }: IInvoice,
   id: number
 ) => {
   const updatedInvoice = await prisma.invoice.update({
     where: { id },
-    data: { userId, description, enterpriseCpnj },
+    data: { userId, description, enterpriseCnpj },
     select: invoiceSelect,
   });
 

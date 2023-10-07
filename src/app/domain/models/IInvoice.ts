@@ -1,7 +1,7 @@
 export interface IInvoice {
   id?: number;
   userId: number;
-  enterpriseCpnj?: string;
+  enterpriseCnpj?: string;
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;

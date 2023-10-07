@@ -8,7 +8,7 @@ import { AuthCustomRequest } from "../domain/types/Auth";
 const create = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { enterpriseCpnj, description } = req.body as IInvoice;
+    const { enterpriseCnpj, description } = req.body as IInvoice;
 
     if (!user_info.id) {
       return res.status(400).json({
@@ -21,7 +21,7 @@ const create = async (req: Request, res: Response) => {
       await invoiceSchema.parseAsync({
         description,
         userId: user_info.id as number,
-        enterpriseCpnj,
+        enterpriseCnpj,
       });
     } catch (e) {
       let errorMessages = "";
@@ -38,7 +38,7 @@ const create = async (req: Request, res: Response) => {
 
     const createdInvoice = await InvoiceRepository.create({
       userId: user_info.id as number,
-      enterpriseCpnj,
+      enterpriseCnpj,
       description,
     });
 
@@ -129,7 +129,7 @@ const findById = async (req: Request, res: Response) => {
 const updateById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { enterpriseCpnj, description } = req.body as IInvoice;
+    const { enterpriseCnpj, description } = req.body as IInvoice;
     const { id } = req.params;
 
     if (!id) {
@@ -161,7 +161,7 @@ const updateById = async (req: Request, res: Response) => {
       await invoiceSchema.parseAsync({
         description,
         userId: user_info.id as number,
-        enterpriseCpnj,
+        enterpriseCnpj,
       });
     } catch (e) {
       let errorMessages = "";
@@ -177,7 +177,7 @@ const updateById = async (req: Request, res: Response) => {
     }
 
     const updatedInvoice = await InvoiceRepository.updateById(
-      { description, userId: user_info.id as number, enterpriseCpnj },
+      { description, userId: user_info.id as number, enterpriseCnpj },
       convertedId
     );
 

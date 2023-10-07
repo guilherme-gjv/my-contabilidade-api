@@ -25,7 +25,7 @@ model User {
 
 model Invoice {
   id              Int                @default(autoincrement())  @id
-  enterpriseCpnj  String?            @map("enterprise_cpnj")
+  enterpriseCnpj  String?            @map("enterprise_cnpj")
   description     String?  
   user            User               @relation(fields: [userId], references: [id])
   userId          Int                @map("user_id")
