@@ -55,7 +55,7 @@ const findById = async (id: number) => {
   return user;
 };
 
-const updatedById = async (
+const updateById = async (
   { email, cpf, name, password }: IUser,
   id: number
 ) => {
@@ -81,6 +81,6 @@ export default {
   createUser,
   findAll,
   findById,
-  updatedById,
+  updateById,
   deleteById,
 };
