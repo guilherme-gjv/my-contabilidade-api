@@ -4,7 +4,7 @@ export const invoiceSelect: Prisma.InvoiceSelect = {
   id: true,
   userId: true,
   items: true,
-  enterpriseCpnj: true,
+  enterpriseCnpj: true,
   description: true,
   user: false,
   createdAt: true,
