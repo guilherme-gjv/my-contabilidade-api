@@ -18,6 +18,7 @@ const create = async ({ userId, description, enterpriseCpnj }: IInvoice) => {
 };
 
 const findAll = async (
+  userId: number,
   page: number | undefined = 1,
   rows: number | undefined = 10
 ) => {
@@ -34,6 +35,7 @@ const findAll = async (
   }
 
   const invoices = await prisma.invoice.findMany({
+    where: { userId },
     skip: (page - 1) * rows,
     take: rows,
     select: invoiceSelect,
