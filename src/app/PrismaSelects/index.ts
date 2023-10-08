@@ -11,6 +11,18 @@ export const invoiceSelect: Prisma.InvoiceSelect = {
   updatedAt: true,
 };
 
+export const invoiceItemSelect: Prisma.InvoiceItemSelect = {
+  id: true,
+  name: true,
+  price: true,
+  invoiceId: true,
+  invoice: {
+    select: { userId: true },
+  },
+  createdAt: true,
+  updatedAt: true,
+};
+
 export const authSelect: Prisma.UserSelect = {
   id: true,
   email: true,
