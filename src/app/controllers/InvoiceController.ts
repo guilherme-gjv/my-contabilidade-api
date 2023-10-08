@@ -114,7 +114,7 @@ const findById = async (req: Request, res: Response) => {
     if (!foundInvoice) {
       return res
         .status(404)
-        .json({ message: "Nota de pagamento não encontrada." });
+        .json({ error: "Nota de pagamento não encontrada." });
     }
 
     if (foundInvoice?.userId !== (user_info.id as number)) {
@@ -161,7 +161,7 @@ const updateById = async (req: Request, res: Response) => {
     if (!foundInvoice) {
       return res
         .status(404)
-        .json({ message: "Nota de pagamento não encontrada." });
+        .json({ error: "Nota de pagamento não encontrada." });
     }
 
     try {
@@ -217,7 +217,7 @@ const deleteById = async (req: Request, res: Response) => {
     const foundInvoice = await InvoiceRepository.findById(convertedId);
 
     if (!foundInvoice) {
-      return res.status(404).json({ message: "Nota fiscal não encontrada." });
+      return res.status(404).json({ error: "Nota fiscal não encontrada." });
     }
 
     if (foundInvoice.userId !== (user_info.id as number)) {
