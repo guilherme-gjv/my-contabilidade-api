@@ -95,35 +95,42 @@ const findAll = async (req: Request, res: Response) => {
 };
 
 const findById = async (req: Request, res: Response) => {
-  const { user_info } = req as AuthCustomRequest;
-  const { id } = req.params;
+  try {
+    const { user_info } = req as AuthCustomRequest;
+    const { id } = req.params;
 
-  if (!id) {
-    return res.status(400).json({ error: "O id não foi informado." });
-  }
+    if (!id) {
+      return res.status(400).json({ error: "O id não foi informado." });
+    }
 
-  let convertedId = parseInt(id);
+    let convertedId = parseInt(id);
 
-  if (isNaN(convertedId)) {
-    return res.status(400).json({ error: "O id informado não é um número." });
-  }
+    if (isNaN(convertedId)) {
+      return res.status(400).json({ error: "O id informado não é um número." });
+    }
 
-  const foundInvoice = await InvoiceRepository.findById(convertedId);
+    const foundInvoice = await InvoiceRepository.findById(convertedId);
 
-  if (!foundInvoice) {
-    return res
-      .status(404)
-      .json({ message: "Nota de pagamento não encontrada." });
-  }
+    if (!foundInvoice) {
+      return res
+        .status(404)
+        .json({ message: "Nota de pagamento não encontrada." });
+    }
 
-  if (foundInvoice?.userId !== (user_info.id as number)) {
-    return res.status(403).json({
-      error:
-        "O usuário com o id informado não pode acessar esta esta nota fiscal.",
+    if (foundInvoice?.userId !== (user_info.id as number)) {
+      return res.status(403).json({
+        error:
+          "O usuário com o id informado não pode acessar esta nota fiscal.",
+      });
+    }
+
+    return res.status(200).json({ data: foundInvoice });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Erro inesperado.",
+      error_details: (e as Error).message,
     });
   }
-
-  return res.status(200).json({ data: foundInvoice });
 };
 
 const updateById = async (req: Request, res: Response) => {
@@ -147,7 +154,7 @@ const updateById = async (req: Request, res: Response) => {
     if (foundInvoice?.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota fiscal.",
       });
     }
 
@@ -216,7 +223,7 @@ const deleteById = async (req: Request, res: Response) => {
     if (foundInvoice.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota fiscal.",
       });
     }
 
