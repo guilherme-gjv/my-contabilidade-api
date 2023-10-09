@@ -87,7 +87,7 @@ const findById = async (req: Request, res: Response) => {
     const foundUser = await UserRepository.findById(convertedId);
 
     if (!foundUser) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+      return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
     return res.status(200).json({ data: foundUser });
@@ -161,7 +161,7 @@ const updateById = async (req: Request, res: Response) => {
     const foundUser = await UserRepository.findById(convertedId);
 
     if (!foundUser) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+      return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
     try {
@@ -239,7 +239,7 @@ const deleteById = async (req: Request, res: Response) => {
     const foundUser = await UserRepository.findById(convertedId);
 
     if (!foundUser) {
-      return res.status(404).json({ message: "Usuário não encontrado." });
+      return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
     const deletedUser = await UserRepository.deleteById(convertedId);
