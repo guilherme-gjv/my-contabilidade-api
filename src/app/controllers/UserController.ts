@@ -66,13 +66,13 @@ const create = async (req: Request, res: Response) => {
 const findById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { id } = req.params;
+    const { user_id } = req.params;
 
-    if (!id) {
+    if (!user_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(id);
+    let convertedId = parseInt(user_id);
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
@@ -140,13 +140,13 @@ const updateById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
     const { email, cpf, name, password } = req.body;
-    const { id } = req.params;
+    const { user_id } = req.params;
 
-    if (!id) {
+    if (!user_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(id);
+    let convertedId = parseInt(user_id);
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
@@ -218,13 +218,13 @@ const updateById = async (req: Request, res: Response) => {
 const deleteById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { id } = req.params;
+    const { user_id } = req.params;
 
-    if (!id) {
+    if (!user_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(id);
+    let convertedId = parseInt(user_id);
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
