@@ -27,7 +27,7 @@ model Invoice {
   id              Int                @default(autoincrement())  @id
   enterpriseCnpj  String?            @map("enterprise_cnpj")
   description     String?  
-  user            User               @relation(fields: [userId], references: [id])
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId          Int                @map("user_id")
   items           InvoiceItem[] 
   createdAt       DateTime           @default(now()) @map("created_at")
@@ -39,7 +39,7 @@ model Invoice {
 model InvoiceItem {
   id          Int       @default(autoincrement()) @id
   invoiceId   Int       @map("invoice_id")
-  invoice     Invoice   @relation(fields: [invoiceId], references: [id])
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   name        String
   price       Float 
   createdAt       DateTime        @default(now()) @map("created_at")
