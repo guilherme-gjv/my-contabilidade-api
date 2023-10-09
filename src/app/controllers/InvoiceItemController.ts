@@ -43,13 +43,15 @@ const create = async (req: Request, res: Response) => {
     const foundInvoice = await InvoiceRepository.findById(convertedInvoiceId);
 
     if (!foundInvoice) {
-      return res.status(404).json({ error: "Nota fiscal não encontrada." });
+      return res
+        .status(404)
+        .json({ error: "Nota de pagamento não encontrada." });
     }
 
     if (foundInvoice?.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota de pagamento.",
       });
     }
 
@@ -177,7 +179,7 @@ const findById = async (req: Request, res: Response) => {
     if (foundInvoiceItem.invoice.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar este item de nota fiscal.",
+          "O usuário com o id informado não pode acessar este item de nota de pagamento.",
       });
     }
 
@@ -246,7 +248,7 @@ const updateById = async (req: Request, res: Response) => {
     if (foundInvoiceItem.invoice.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota de pagamento.",
       });
     }
 
@@ -302,7 +304,7 @@ const deleteById = async (req: Request, res: Response) => {
     if (foundInvoiceItem?.invoice.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar este item de nota fiscal.",
+          "O usuário com o id informado não pode acessar este item de nota de pagamento.",
       });
     }
 
@@ -310,7 +312,7 @@ const deleteById = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ message: "Nota fiscal deletada.", data: deletedInvoice });
+      .json({ message: "Nota de pagamento deletada.", data: deletedInvoice });
   } catch (e) {
     return res.status(500).json({
       error: "Erro inesperado.",
