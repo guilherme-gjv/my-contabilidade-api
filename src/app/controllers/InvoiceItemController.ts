@@ -46,7 +46,7 @@ const create = async (req: Request, res: Response) => {
     if (foundInvoice?.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota fiscal.",
       });
     }
 
@@ -85,7 +85,7 @@ const findAll = async (req: Request, res: Response) => {
     if (invoice?.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota fiscal.",
       });
     }
 
