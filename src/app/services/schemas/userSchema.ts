@@ -9,8 +9,9 @@ export const userSchema = z.object({
     .email({ message: "email inválido." }),
   cpf: z
     .string({ description: "O campo 'cpf' deve ser string." })
-    .min(11, { message: "O cpf ou cpnj deve possuir 11 ou 14 dígitos." })
-    .max(14, { message: "O cpf ou cpnj deve possuir 11 ou 14 dígitos." })
+    .refine((data) => data.length === 11 || data.length === 14, {
+      message: "O cpf ou cnpj deve possuir 11 ou 14 dígitos.",
+    })
     .optional(),
   name: z
     .string({
