@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRoutes);
 router.use("/user", userRoutes);
-router.use("/user/:user_id/invoice", invoiceRoutes);
-router.use("/user/:user_id/invoice/:invoice_id/item", invoiceItemRoutes);
+router.use("/invoice", invoiceRoutes);
+router.use("/invoice/:invoice_id/item", invoiceItemRoutes);
 
 export default router;
