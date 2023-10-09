@@ -97,13 +97,13 @@ const findAll = async (req: Request, res: Response) => {
 const findById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { id } = req.params;
+    const { invoice_id } = req.params;
 
-    if (!id) {
+    if (!invoice_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(id);
+    let convertedId = parseInt(invoice_id);
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
@@ -137,13 +137,13 @@ const updateById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
     const { enterpriseCnpj, description } = req.body as IInvoice;
-    const { id } = req.params;
+    const { invoice_id } = req.params;
 
-    if (!id) {
+    if (!invoice_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(id);
+    let convertedId = parseInt(invoice_id);
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
@@ -202,13 +202,13 @@ const updateById = async (req: Request, res: Response) => {
 const deleteById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { id } = req.params;
+    const { invoice_id } = req.params;
 
-    if (!id) {
+    if (!invoice_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(id);
+    let convertedId = parseInt(invoice_id);
 
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });

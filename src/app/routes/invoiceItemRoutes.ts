@@ -2,18 +2,22 @@ import { Router } from "express";
 import AuthMiddleware from "../middlewares/AuthMiddleware";
 import InvoiceItemController from "../controllers/InvoiceItemController";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post("/", AuthMiddleware.authenticate, InvoiceItemController.create);
 router.get("/", AuthMiddleware.authenticate, InvoiceItemController.findAll);
-router.get("/:id", AuthMiddleware.authenticate, InvoiceItemController.findById);
+router.get(
+  "/:invoice_item_id",
+  AuthMiddleware.authenticate,
+  InvoiceItemController.findById
+);
 router.put(
-  "/:id",
+  "/:invoice_item_id",
   AuthMiddleware.authenticate,
   InvoiceItemController.updateById
 );
 router.delete(
-  "/:id",
+  "/:invoice_item_id",
   AuthMiddleware.authenticate,
   InvoiceItemController.deleteById
 );

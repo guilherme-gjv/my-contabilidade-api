@@ -6,8 +6,12 @@ const router = Router();
 
 router.post("/", UserController.create);
 router.get("/", AuthMiddleware.authenticate, UserController.findAll);
-router.get("/:id", AuthMiddleware.authenticate, UserController.findById);
-router.put("/:id", AuthMiddleware.authenticate, UserController.updateById);
-router.delete("/:id", AuthMiddleware.authenticate, UserController.deleteById);
+router.get("/:user_id", AuthMiddleware.authenticate, UserController.findById);
+router.put("/:user_id", AuthMiddleware.authenticate, UserController.updateById);
+router.delete(
+  "/:user_id",
+  AuthMiddleware.authenticate,
+  UserController.deleteById
+);
 
 export default router;
