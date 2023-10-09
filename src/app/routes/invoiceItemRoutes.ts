@@ -2,7 +2,7 @@ import { Router } from "express";
 import AuthMiddleware from "../middlewares/AuthMiddleware";
 import InvoiceItemController from "../controllers/InvoiceItemController";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post("/", AuthMiddleware.authenticate, InvoiceItemController.create);
 router.get("/", AuthMiddleware.authenticate, InvoiceItemController.findAll);
