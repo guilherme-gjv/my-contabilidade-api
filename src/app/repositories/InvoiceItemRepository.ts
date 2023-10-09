@@ -45,9 +45,9 @@ const findAll = async (
   return { invoiceItems, rows, page };
 };
 
-const findById = async (id: number) => {
+const findById = async (invoiceId: number, id: number) => {
   const invoiceItem = await prisma.invoiceItem.findUnique({
-    where: { id },
+    where: { id, invoiceId },
     select: invoiceItemSelect,
   });
 

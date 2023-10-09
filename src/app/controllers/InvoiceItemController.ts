@@ -9,7 +9,10 @@ import InvoiceRepository from "../repositories/InvoiceRepository";
 const create = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { invoiceId, name, price } = req.body as IInvoiceItem;
+    const { name, price } = req.body as IInvoiceItem;
+    const { invoice_id } = req.params;
+
+    const convertedInvoiceId = parseInt(invoice_id);
 
     if (!user_info.id) {
       return res.status(400).json({
@@ -20,7 +23,7 @@ const create = async (req: Request, res: Response) => {
 
     try {
       await invoiceItemSchema.parseAsync({
-        invoiceId,
+        invoiceId: convertedInvoiceId,
         name,
         price,
       });
@@ -37,7 +40,7 @@ const create = async (req: Request, res: Response) => {
       });
     }
 
-    const foundInvoice = await InvoiceRepository.findById(invoiceId);
+    const foundInvoice = await InvoiceRepository.findById(convertedInvoiceId);
 
     if (!foundInvoice) {
       return res.status(404).json({ error: "Nota fiscal não encontrada." });
@@ -51,7 +54,7 @@ const create = async (req: Request, res: Response) => {
     }
 
     const createdInvoiceItem = await InvoiceItemRepository.create({
-      invoiceId,
+      invoiceId: convertedInvoiceId,
       name,
       price,
     });
@@ -71,7 +74,16 @@ const create = async (req: Request, res: Response) => {
 const findAll = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { invoiceId } = req.body as IInvoiceItem;
+    const { invoice_id } = req.params;
+
+    const convertedInvoiceId = parseInt(invoice_id);
+
+    if (isNaN(convertedInvoiceId)) {
+      return res.status(400).json({
+        error:
+          "Não foi possível encontrar 'id' no token de autorização informado.",
+      });
+    }
 
     if (!user_info.id) {
       return res.status(400).json({
@@ -80,12 +92,18 @@ const findAll = async (req: Request, res: Response) => {
       });
     }
 
-    const invoice = await InvoiceRepository.findById(invoiceId);
+    const invoice = await InvoiceRepository.findById(convertedInvoiceId);
+
+    if (!invoice) {
+      return res.status(404).json({
+        error: "Nota de pagamento não encontrada.",
+      });
+    }
 
     if (invoice?.userId !== (user_info.id as number)) {
       return res.status(403).json({
         error:
-          "O usuário com o id informado não pode acessar esta nota fiscal.",
+          "O usuário com o id informado não pode acessar esta nota de pagamento.",
       });
     }
 
@@ -107,7 +125,7 @@ const findAll = async (req: Request, res: Response) => {
 
     const { invoiceItems, page, rows } = await InvoiceItemRepository.findAll(
       user_info.id as number,
-      invoiceId,
+      convertedInvoiceId,
       convertedPage,
       convertedRows
     );
@@ -124,19 +142,31 @@ const findAll = async (req: Request, res: Response) => {
 const findById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { invoice_item_id } = req.params;
+    const { invoice_id, invoice_item_id } = req.params;
 
     if (!invoice_item_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(invoice_item_id);
+    let convertedInvoiceId = parseInt(invoice_id);
+    let convertedItemId = parseInt(invoice_item_id);
 
-    if (isNaN(convertedId)) {
-      return res.status(400).json({ error: "O id informado não é um número." });
+    if (isNaN(convertedInvoiceId)) {
+      return res
+        .status(400)
+        .json({ error: "O id da nota informado não é um número." });
     }
 
-    const foundInvoiceItem = await InvoiceItemRepository.findById(convertedId);
+    if (isNaN(convertedItemId)) {
+      return res
+        .status(400)
+        .json({ error: "O id do item da nota informado não é um número." });
+    }
+
+    const foundInvoiceItem = await InvoiceItemRepository.findById(
+      convertedInvoiceId,
+      convertedItemId
+    );
 
     if (!foundInvoiceItem) {
       return res
@@ -164,21 +194,28 @@ const updateById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
     const { name, price } = req.body as IInvoiceItem;
-    const { invoice_item_id } = req.params;
+    const { invoice_id, invoice_item_id } = req.params;
 
     if (!invoice_item_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
-    let convertedId = parseInt(invoice_item_id);
+    let convertedInvoiceId = parseInt(invoice_id);
+    let convertedItemId = parseInt(invoice_item_id);
 
-    if (isNaN(convertedId)) {
+    if (isNaN(convertedInvoiceId)) {
+      return res
+        .status(400)
+        .json({ error: "O id da nota informado não é um número." });
+    }
+
+    if (isNaN(convertedItemId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
     }
 
     try {
       await invoiceItemSchema.parseAsync({
-        invoiceId: convertedId,
+        invoiceId: convertedItemId,
         name,
         price,
       });
@@ -195,7 +232,10 @@ const updateById = async (req: Request, res: Response) => {
       });
     }
 
-    const foundInvoiceItem = await InvoiceItemRepository.findById(convertedId);
+    const foundInvoiceItem = await InvoiceItemRepository.findById(
+      convertedInvoiceId,
+      convertedItemId
+    );
 
     if (!foundInvoiceItem) {
       return res
@@ -211,8 +251,8 @@ const updateById = async (req: Request, res: Response) => {
     }
 
     const updatedInvoiceItem = await InvoiceItemRepository.updateById(
-      { invoiceId: convertedId, name, price },
-      convertedId
+      { invoiceId: convertedItemId, name, price },
+      convertedItemId
     );
 
     return res.status(200).json({
@@ -230,19 +270,28 @@ const updateById = async (req: Request, res: Response) => {
 const deleteById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { invoice_item_id } = req.params;
+    const { invoice_id, invoice_item_id } = req.params;
 
     if (!invoice_item_id) {
       return res.status(400).json({ error: "O id não foi informado." });
     }
 
+    let convertedInvoiceId = parseInt(invoice_id);
     let convertedId = parseInt(invoice_item_id);
 
+    if (isNaN(convertedInvoiceId)) {
+      return res
+        .status(400)
+        .json({ error: "O id da nota informado não é um número." });
+    }
     if (isNaN(convertedId)) {
       return res.status(400).json({ error: "O id informado não é um número." });
     }
 
-    const foundInvoiceItem = await InvoiceItemRepository.findById(convertedId);
+    const foundInvoiceItem = await InvoiceItemRepository.findById(
+      convertedInvoiceId,
+      convertedId
+    );
 
     if (!foundInvoiceItem) {
       return res
