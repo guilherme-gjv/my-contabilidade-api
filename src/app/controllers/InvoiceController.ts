@@ -79,13 +79,13 @@ const findAll = async (req: Request, res: Response) => {
       convertedRows = undefined;
     }
 
-    const { invoices, page, rows } = await InvoiceRepository.findAll(
+    const { invoices, page, rows, count } = await InvoiceRepository.findAll(
       user_info.id as number,
       convertedPage,
       convertedRows
     );
 
-    return res.status(200).json({ page, rows, data: invoices });
+    return res.status(200).json({ count, page, rows, data: invoices });
   } catch (e) {
     return res.status(500).json({
       error: "Erro inesperado.",

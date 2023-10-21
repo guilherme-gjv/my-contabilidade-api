@@ -37,13 +37,16 @@ const findAll = async (
     rows = 50;
   }
 
-  const users = await prisma.user.findMany({
-    skip: (page - 1) * rows,
-    take: rows,
-    select: userSelect,
-  });
+  const [count, users] = await prisma.$transaction([
+    prisma.user.count(),
+    prisma.user.findMany({
+      skip: (page - 1) * rows,
+      take: rows,
+      select: userSelect,
+    }),
+  ]);
 
-  return { users, rows, page };
+  return { users, rows, page, count };
 };
 
 const findById = async (id: number) => {

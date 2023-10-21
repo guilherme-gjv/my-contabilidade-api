@@ -122,12 +122,12 @@ const findAll = async (req: Request, res: Response) => {
       convertedRows = undefined;
     }
 
-    const { users, page, rows } = await UserRepository.findAll(
+    const { users, page, rows, count } = await UserRepository.findAll(
       convertedPage,
       convertedRows
     );
 
-    return res.status(200).json({ page, rows, data: users });
+    return res.status(200).json({ count, page, rows, data: users });
   } catch (e) {
     return res.status(500).json({
       error: "Erro inesperado.",

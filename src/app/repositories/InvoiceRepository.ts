@@ -34,14 +34,17 @@ const findAll = async (
     rows = 50;
   }
 
-  const invoices = await prisma.invoice.findMany({
-    where: { userId },
-    skip: (page - 1) * rows,
-    take: rows,
-    select: invoiceSelect,
-  });
+  const [count, invoices] = await prisma.$transaction([
+    prisma.invoice.count({ where: { userId } }),
+    prisma.invoice.findMany({
+      where: { userId },
+      skip: (page - 1) * rows,
+      take: rows,
+      select: invoiceSelect,
+    }),
+  ]);
 
-  return { invoices, rows, page };
+  return { invoices, rows, page, count };
 };
 
 const findById = async (id: number) => {
