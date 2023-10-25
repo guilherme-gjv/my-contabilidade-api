@@ -73,6 +73,74 @@ const create = async (req: Request, res: Response) => {
   }
 };
 
+const createMany = async (req: Request, res: Response) => {
+  try {
+    const { user_info } = req as AuthCustomRequest;
+    const invoiceItems = req.body as IInvoiceItem[];
+    const { invoice_id } = req.params;
+
+    const convertedInvoiceId = parseInt(invoice_id);
+
+    if (!user_info.id) {
+      return res.status(400).json({
+        error:
+          "Não foi possível encontrar 'id' no token de autorização informado.",
+      });
+    }
+
+    try {
+      invoiceItems.forEach(async (item) => {
+        await invoiceItemSchema.parseAsync({
+          invoiceId: convertedInvoiceId,
+          name: item.name,
+          price: item.price,
+        });
+      });
+    } catch (e) {
+      let errorMessages = "";
+      const err = e as ZodError;
+      err.issues.forEach((issue, index) => {
+        errorMessages +=
+          issue.message + (index !== err.issues.length - 1 ? " " : "");
+      });
+      return res.status(400).json({
+        error: errorMessages,
+        detailed_errors: e as ZodError,
+      });
+    }
+
+    const foundInvoice = await InvoiceRepository.findById(convertedInvoiceId);
+
+    if (!foundInvoice) {
+      return res
+        .status(404)
+        .json({ error: "Nota de pagamento não encontrada." });
+    }
+
+    if (foundInvoice?.userId !== (user_info.id as number)) {
+      return res.status(403).json({
+        error:
+          "O usuário com o id informado não pode acessar esta nota de pagamento.",
+      });
+    }
+
+    const createdInvoiceItem = await InvoiceItemRepository.createMany({
+      invoiceId: convertedInvoiceId,
+      invoiceItens: invoiceItems,
+    });
+
+    return res.status(200).json({
+      message: "Itens de nota de pagamento criados.",
+      data: createdInvoiceItem,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Erro inesperado.",
+      error_details: (e as Error).message,
+    });
+  }
+};
+
 const findAll = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
@@ -270,6 +338,73 @@ const updateById = async (req: Request, res: Response) => {
   }
 };
 
+const updateMany = async (req: Request, res: Response) => {
+  try {
+    const { user_info } = req as AuthCustomRequest;
+    const invoiceItens = req.body as IInvoiceItem[];
+    const { invoice_id } = req.params;
+
+    let convertedInvoiceId = parseInt(invoice_id);
+
+    if (isNaN(convertedInvoiceId)) {
+      return res
+        .status(400)
+        .json({ error: "O id da nota informado não é um número." });
+    }
+
+    try {
+      invoiceItens.forEach(async (item) => {
+        await invoiceItemSchema.parseAsync({
+          invoiceId: item.id,
+          name: item.name,
+          price: item.price,
+        });
+      });
+    } catch (e) {
+      let errorMessages = "";
+      const err = e as ZodError;
+      err.issues.forEach((issue, index) => {
+        errorMessages +=
+          issue.message + (index !== err.issues.length - 1 ? " " : "");
+      });
+      return res.status(400).json({
+        error: errorMessages,
+        detailed_errors: e as ZodError,
+      });
+    }
+
+    const foundInvoice = await InvoiceRepository.findById(convertedInvoiceId);
+
+    if (!foundInvoice) {
+      return res
+        .status(404)
+        .json({ error: "Item de nota de pagamento não encontrada." });
+    }
+
+    if (foundInvoice.userId !== (user_info.id as number)) {
+      return res.status(403).json({
+        error:
+          "O usuário com o id informado não pode acessar esta nota de pagamento.",
+      });
+    }
+
+    const count = await InvoiceItemRepository.updateMany({
+      invoiceId: foundInvoice.id,
+      invoiceItens,
+    });
+
+    return res.status(200).json({
+      message: "Itens de nota de pagamento atualizados.",
+      count,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: "Erro inesperado.",
+      error_details: (e as Error).message,
+    });
+  }
+};
+
 const deleteById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
@@ -322,4 +457,12 @@ const deleteById = async (req: Request, res: Response) => {
   }
 };
 
-export default { create, findAll, findById, updateById, deleteById };
+export default {
+  create,
+  createMany,
+  findAll,
+  findById,
+  updateById,
+  updateMany,
+  deleteById,
+};

@@ -4,6 +4,11 @@ import { invoiceItemSelect } from "../PrismaSelects";
 
 const prisma = new PrismaClient();
 
+interface IManyInvoices {
+  invoiceId: number;
+  invoiceItens: IInvoiceItem[];
+}
+
 const create = async ({ invoiceId, name, price }: IInvoiceItem) => {
   const createdInvoiceItem = await prisma.invoiceItem.create({
     data: {
@@ -15,6 +20,21 @@ const create = async ({ invoiceId, name, price }: IInvoiceItem) => {
   });
 
   return createdInvoiceItem;
+};
+
+const createMany = async ({ invoiceId, invoiceItens }: IManyInvoices) => {
+  const invoicesWithInvoiceId = invoiceItens.map((item) => {
+    return {
+      ...item,
+      invoiceId,
+    };
+  });
+
+  const createdInvoiceItems = await prisma.invoiceItem.createMany({
+    data: invoicesWithInvoiceId,
+  });
+
+  return createdInvoiceItems;
 };
 
 const findAll = async (
@@ -70,6 +90,19 @@ const updateById = async ({ name, price }: IInvoiceItem, id: number) => {
   return updatedInvoiceItem;
 };
 
+const updateMany = async ({ invoiceId, invoiceItens }: IManyInvoices) => {
+  let count = 0;
+  for (const item of invoiceItens) {
+    await prisma.invoiceItem.update({
+      where: { invoiceId, id: item.id },
+      data: { name: item.name, price: item.price },
+    });
+    count++;
+  }
+
+  return count;
+};
+
 const deleteById = async (id: number) => {
   const deletedInvoiceItem = await prisma.invoiceItem.delete({
     where: { id },
@@ -79,4 +112,12 @@ const deleteById = async (id: number) => {
   return deletedInvoiceItem;
 };
 
-export default { create, findAll, findById, updateById, deleteById };
+export default {
+  create,
+  createMany,
+  findAll,
+  findById,
+  updateById,
+  updateMany,
+  deleteById,
+};
