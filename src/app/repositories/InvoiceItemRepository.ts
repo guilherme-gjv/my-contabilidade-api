@@ -90,6 +90,19 @@ const updateById = async ({ name, price }: IInvoiceItem, id: number) => {
   return updatedInvoiceItem;
 };
 
+const updateMany = async ({ invoiceId, invoiceItens }: IManyInvoices) => {
+  let count = 0;
+  for (const item of invoiceItens) {
+    await prisma.invoiceItem.update({
+      where: { invoiceId, id: item.id },
+      data: { name: item.name, price: item.price },
+    });
+    count++;
+  }
+
+  return count;
+};
+
 const deleteById = async (id: number) => {
   const deletedInvoiceItem = await prisma.invoiceItem.delete({
     where: { id },
@@ -105,5 +118,6 @@ export default {
   findAll,
   findById,
   updateById,
+  updateMany,
   deleteById,
 };
