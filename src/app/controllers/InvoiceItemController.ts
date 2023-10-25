@@ -89,13 +89,13 @@ const createMany = async (req: Request, res: Response) => {
     }
 
     try {
-      invoiceItems.forEach(async (item) => {
+      for (const item of invoiceItems) {
         await invoiceItemSchema.parseAsync({
           invoiceId: convertedInvoiceId,
           name: item.name,
           price: item.price,
         });
-      });
+      }
     } catch (e) {
       let errorMessages = "";
       const err = e as ZodError;
@@ -353,13 +353,13 @@ const updateMany = async (req: Request, res: Response) => {
     }
 
     try {
-      invoiceItens.forEach(async (item) => {
+      for (const item of invoiceItens) {
         await invoiceItemSchema.parseAsync({
           invoiceId: item.id,
           name: item.name,
           price: item.price,
         });
-      });
+      }
     } catch (e) {
       let errorMessages = "";
       const err = e as ZodError;
