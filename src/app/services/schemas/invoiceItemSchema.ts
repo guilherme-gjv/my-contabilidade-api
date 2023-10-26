@@ -17,4 +17,10 @@ export const invoiceItemSchema = z.object({
       description: "O campo 'price' deve ser um número.",
     })
     .optional(),
+  quantity: z
+    .number({
+      required_error: "O campo  'quantity' é obrigatório",
+      description: "O campo 'quantity' deve ser um número.",
+    })
+    .min(0, "A quantidade deve ser um valor positivo."),
 });

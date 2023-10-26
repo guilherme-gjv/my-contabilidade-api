@@ -9,7 +9,7 @@ import InvoiceRepository from "../repositories/InvoiceRepository";
 const create = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { name, price } = req.body as IInvoiceItem;
+    const { name, price, quantity } = req.body as IInvoiceItem;
     const { invoice_id } = req.params;
 
     const convertedInvoiceId = parseInt(invoice_id);
@@ -59,6 +59,7 @@ const create = async (req: Request, res: Response) => {
       invoiceId: convertedInvoiceId,
       name,
       price,
+      quantity,
     });
 
     return res.status(200).json({
@@ -264,7 +265,7 @@ const findById = async (req: Request, res: Response) => {
 const updateById = async (req: Request, res: Response) => {
   try {
     const { user_info } = req as AuthCustomRequest;
-    const { name, price } = req.body as IInvoiceItem;
+    const { name, price, quantity } = req.body as IInvoiceItem;
     const { invoice_id, invoice_item_id } = req.params;
 
     if (!invoice_item_id) {
@@ -322,7 +323,7 @@ const updateById = async (req: Request, res: Response) => {
     }
 
     const updatedInvoiceItem = await InvoiceItemRepository.updateById(
-      { invoiceId: convertedItemId, name, price },
+      { invoiceId: convertedItemId, name, price, quantity },
       convertedItemId
     );
 

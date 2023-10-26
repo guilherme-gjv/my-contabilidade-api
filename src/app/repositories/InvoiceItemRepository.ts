@@ -9,12 +9,13 @@ interface IManyInvoices {
   invoiceItens: IInvoiceItem[];
 }
 
-const create = async ({ invoiceId, name, price }: IInvoiceItem) => {
+const create = async ({ invoiceId, name, price, quantity }: IInvoiceItem) => {
   const createdInvoiceItem = await prisma.invoiceItem.create({
     data: {
       invoiceId,
       name,
       price,
+      quantity,
     },
     select: invoiceItemSelect,
   });
@@ -77,12 +78,16 @@ const findById = async (invoiceId: number, id: number) => {
   return invoiceItem;
 };
 
-const updateById = async ({ name, price }: IInvoiceItem, id: number) => {
+const updateById = async (
+  { name, price, quantity }: IInvoiceItem,
+  id: number
+) => {
   const updatedInvoiceItem = await prisma.invoiceItem.update({
     where: { id },
     data: {
       name,
       price,
+      quantity,
     },
     select: invoiceItemSelect,
   });
@@ -95,7 +100,7 @@ const updateMany = async ({ invoiceId, invoiceItens }: IManyInvoices) => {
   for (const item of invoiceItens) {
     await prisma.invoiceItem.update({
       where: { invoiceId, id: item.id },
-      data: { name: item.name, price: item.price },
+      data: { name: item.name, price: item.price, quantity: item.quantity },
     });
     count++;
   }

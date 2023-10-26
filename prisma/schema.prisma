@@ -37,11 +37,12 @@ model Invoice {
 }
 
 model InvoiceItem {
-  id          Int       @default(autoincrement()) @id
-  invoiceId   Int       @map("invoice_id")
-  invoice     Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  name        String
-  price       Float 
+  id              Int       @default(autoincrement()) @id
+  invoiceId       Int       @map("invoice_id")
+  invoice         Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name            String
+  price           Float 
+  quantity        Int             @default(0)
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime?       @updatedAt      @map("updated_at")
 
