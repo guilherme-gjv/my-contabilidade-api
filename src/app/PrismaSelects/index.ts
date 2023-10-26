@@ -19,6 +19,7 @@ export const invoiceItemSelect: Prisma.InvoiceItemSelect = {
   invoice: {
     select: { userId: true },
   },
+  quantity: true,
   createdAt: true,
   updatedAt: true,
 };

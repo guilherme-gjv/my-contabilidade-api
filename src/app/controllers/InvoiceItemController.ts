@@ -26,6 +26,7 @@ const create = async (req: Request, res: Response) => {
         invoiceId: convertedInvoiceId,
         name,
         price,
+        quantity,
       });
     } catch (e) {
       let errorMessages = "";
@@ -95,6 +96,7 @@ const createMany = async (req: Request, res: Response) => {
           invoiceId: convertedInvoiceId,
           name: item.name,
           price: item.price,
+          quantity: item.quantity,
         });
       }
     } catch (e) {
@@ -290,6 +292,7 @@ const updateById = async (req: Request, res: Response) => {
         invoiceId: convertedItemId,
         name,
         price,
+        quantity,
       });
     } catch (e) {
       let errorMessages = "";
@@ -359,6 +362,7 @@ const updateMany = async (req: Request, res: Response) => {
           invoiceId: item.id,
           name: item.name,
           price: item.price,
+          quantity: item.quantity,
         });
       }
     } catch (e) {
